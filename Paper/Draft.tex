@@ -1,0 +1,49 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{apacite}
+\usepackage[left=1.5cm,right=1.5cm,top=1cm,bottom=1cm]{geometry}
+\setlength{\parskip}{\baselineskip}%
+\setlength{\parindent}{0pt}%
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*0}{*0}
+%\titlespacing{\subsection}{0pt}{*0}{*0}
+%\titlespacing{\subsubsection}{0pt}{*0}{*0}
+
+\author{Silas Mann \and Jonas Peeters}
+\title{DS-GA 1017 Project: Fairness in Sepsis Detection}
+\date{\today}
+\begin{document}
+\maketitle
+\vspace*{-1cm}
+
+%Submit a 1-page summary of your proposed project, listing the names of both project partners and the ADS you propose to analyze in the project. Be explicit about where you’ll get the data and the code implementing the ADS. You should make sure that the data is available, and that you are able to run the code on that data
+
+%As part of your project summary, please add a brief (1-3 sentence) explanation of why you selected this specific ADS, in relation to the topics we study in the responsible data science course. We are still early in the course, but we encourage you to look at the schedule / syllabus for a full list of topics when answering this question.
+
+\pagenumbering{gobble}
+
+\section*{Introduction}
+\par Sepsis is a life-threatening dysfunctional immune response to infection in which the body attacks its own tissues and organs, often leading to organ failure and death \cite{Singer2016}. It is a critically important world-wide public health issue; with a mortality rate of about 16\%, the estimated number of world-wide cases is as high as 31.5 million \cite{Fleischmann2016}, and in the United States alone, over 1.7 million develop sepsis annually\footnote{\href{https://www.cdc.gov/sepsis/clinicaltools/index.html?CDC_AA_refVal=https\%3A\%2F\%2Fwww.cdc.gov\%2Fsepsis\%2Fdatareports\%2Findex.html}{https://www.cdc.gov/sepsis/clinicaltools.html}}. Better outcomes and lower mortality rates have been connected to early treatment, including the administration of early antibiotics and fluids \cite{Rhee2018}. However, early identification of sepsis remains a challenge. Much work has been done in an effort to develop early identification strategies in the clinical setting \cite{Kim2019}, and in recent years, these efforts have turned toward the use of automated decision systems based on machine learning to predict sepsis \cite{Fleuren2020} and identify patients who may benefit from treatment programs such as early-goal directed therapy (EGDT) or SSC bundles \cite{Kim2019}. In an effort to advance these efforts, PhysioNet, a repository for freely-available medical research data, launched a 2019 challenge entitled “Early Prediction of Sepsis from Clinical Data” \cite{Reyna2019}.
+
+\par The use of this a machine learning model to assess the health of an individual and whether or not to start a preemptive procedure to potentially save the patients life is something new. Given the gravity of the consequences it is paramount that models such as these do not further perpetuate the difference in medical treatment different genders receive. For example, \citeauthor{Greenwood2018} found that female patients are less likely as their male counterparts to survive traumatic health episodes, such as heart attacks. A model that informs doctors on the risk of sepsis could either reinforce the existing gender bias in medical care or erase it by being more impartial than the largely male medical staff at ICUs \cite{Chadwick2020}.
+
+\section*{Data}
+\par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient is contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and defined binary sepsis onset based on relevant events (time of initial clinical suspicion, time of organ failure assessment, and time of sepsis onset).
+
+\section*{Code}
+\par In 2019, \citeauthor{Sindwani2019} published an article in Towards Data Science titled “Early Detection of Sepsis Using Physiological Data". In the article, the author outlines the problem, exploratory data analysis, feature selection/engineering, and model training and evaluation. The author also provides a link to a fully functioning GitHub \cite{Karan2019}. For our analysis, we will select the best model to analyze for fairness. 
+
+\section*{Analysis}
+\par Our analysis of this model and the data will be two-fold. First, we will determine if there are any currently existing biases on the basis of gender or age which may lead to less favorable outcomes for marginalized groups. Here we will look at the disparate impact and mean difference between the predictions for both the privileged and unprivileged groups. Secondly, the data we will be using is on a patient-level. Most medical data is used on this level and several precautions are taken to ensure the privacy of the individuals included in the data set. Therefore we will also analyze the possible pitfalls of the privacy measures implemented in this data set.
+
+\newpage
+\bibliographystyle{apacite}
+\bibliography{references}
+\end{document}
