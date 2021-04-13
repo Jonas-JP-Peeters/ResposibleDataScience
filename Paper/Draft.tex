@@ -57,7 +57,7 @@
 
 \par The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
 
-\par Our label of interest is looking at if an individual is identified as having sepsis or not. We can see in Figure \ref{fig:label_dist} that the data is unbalanced. This the model will try to remedy by oversampling those observations that identify sepsis.
+\par Our label of interest is looking at if an individual is identified as having sepsis or not. A value of zero represents the patient not having sepsis and a value of one represents the patient having sepsis. We can see in Figure \ref{fig:label_dist} that the data is unbalanced. This the model will try to remedy by oversampling those observations that identify sepsis.
 
 \begin{figure}[htbp!]
     \centering
