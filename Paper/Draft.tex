@@ -5,9 +5,11 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\graphicspath{{../Figures/}}
 \usepackage{hyperref}
 \usepackage{apacite}
-\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{subcaption}
 \usepackage[left=1.5cm,right=1.5cm,top=1cm,bottom=1cm]{geometry}
 \setlength{\parskip}{\baselineskip}%
 \setlength{\parindent}{0pt}%
@@ -51,28 +53,64 @@
 
 \par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient is contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and defined binary sepsis onset based on relevant events (time of initial clinical suspicion, time of deterioration in organ failure assessment, and time of sepsis onset).
 
-Time of initial clinical suspicion of infection was defined as either the time IV antibiotics or blood cultures, whichever came first. To be considered, antibiotics must have been ordered within 3 days after blood cultures, and blood cultures must have been ordered within 1 day of antibiotics, with at least 3 days of consecutive antibiotics treatment. Organ damage was defined as 2-point deterioration in SOFA score within 1 day. Time of sepsis was defined as either time of clinical suspicion of infection or end time of organ failure assessment, whichever came first, as long as organ damage occurred 2 days before or 1 day after suspicion of infection. A patient was labeled as having sepsis if time is greater than or equal to time of sepsis minus 6 hours.
+\par Time of initial clinical suspicion of infection was defined as either the time IV antibiotics or blood cultures, whichever came first. To be considered, antibiotics must have been ordered within 3 days after blood cultures, and blood cultures must have been ordered within 1 day of antibiotics, with at least 3 days of consecutive antibiotics treatment. Organ damage was defined as 2-point deterioration in SOFA score within 1 day. Time of sepsis was defined as either time of clinical suspicion of infection or end time of organ failure assessment, whichever came first, as long as organ damage occurred 2 days before or 1 day after suspicion of infection. A patient was labeled as having sepsis if time is greater than or equal to time of sepsis minus 6 hours.
 
-The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
+\par The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
 
-The data that is used in the model consists of vital signs, laboratory values and demographic variables. We share some summarized statistics in Table \ref{tab_describe}. The vital signs includes data such as heart rate, pulse oximetry, temperature and systolic blood pressure. These vital signs are collected on a more regular basis and hence we can clearly see that they have less missing values. The laboratory values are the result from blood and other tests. Here we have variables such as fraction of inspired oxygen and glucose. A patient is not always tested and hence we can clearly see that this data is way sparser than those for the vital signs.
+\par Our label of interest is looking at if an individual is identified as having sepsis or not. We can see in Figure \ref{fig:label_dist} that the data is unbalanced. This the model will try to remedy by oversampling those observations that identify sepsis.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[scale = 0.7]{Label_dist.pdf}
+    \caption{Breakdown of Target Variable}
+    \label{fig:label_dist}
+\end{figure}
+
+\par The data that is used in the model consists of vital signs, laboratory values and demographic variables. We share some summarized statistics in Table \ref{tab_describe}. The vital signs includes data such as heart rate, pulse oximetry, temperature and systolic blood pressure. These vital signs are collected on a more regular basis and hence we can clearly see that they have less missing values. The laboratory values are the result from blood and other tests. Here we have variables such as fraction of inspired oxygen and glucose. A patient is not always tested and hence we can clearly see that this data is way sparser than those for the vital signs. The behavior of the missing is even clearer when looking at Figure \ref{fig:var_missings}. Figure \ref{fig:var_dists} gives us the distributions of the continuous variables. Here we see that most variables are normal or log normally distributed. 
 \include{Tables/tab_describe}
 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[scale = 0.45]{var_missing_hist.pdf}
+    \caption{Percentage Missing per Variable}
+    \label{fig:var_missings}
+\end{figure}
 
-were these the final features selected? what about O2STAT?
-Vital Signs : Heart Rate, Temperature, Blood Pressure, Respiratory rate,
-Laboratory Values : Platelet Count, Glucose , Calcium etc
-Demographics : Age, Gender, Time in ICU , Hospital Admit time
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[scale = 0.45]{var_dists.pdf}
+    \caption{Distributions of Continuous Variables}
+    \label{fig:var_dists}
+\end{figure}
 
+\par An important aspect we need to look at is the breakdowns of the sepsis label per category. Our data has two categories we take into account. One is the gender which we will consider when evaluating fairness and the other is the type of ICU (either surgical or medical). We can see the breakdown of the labels in figures \ref{fig:label_ICU} and \ref{fig:label_per_sex}. We can see that you are 75\% and 12\% more likely to have sepsis in the medical ICU or as a male respectively. Another point that is valuable to make here, is that we can see that for every woman in the data set there are 1.3 men. This means that men are over-represented in the sample.
 
+\begin{figure}[hbtp!]
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{label_ICU.pdf}
+    \caption{Type of ICU}
+    \label{fig:label_ICU}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{label_per_sex.pdf}
+    \caption{Gender}
+    \label{fig:label_per_sex}
+\end{subfigure}
+\caption{Sepsis by Categorical Variables}
+\end{figure}
 
+\par 
 
 \begin{figure}
     \centering
-    \includegraphics{'..\Figures\var_missing_hist.pdf'}
-    \caption{Caption}
-    \label{fig:my_label}
+    \includegraphics[scale = 0.45]{box_per_var.pdf}
+    \caption{Feature distribution per Target Label}
+    \label{fig:init_anal}
 \end{figure}
+
 
 \section*{Implementation and validation}
 
