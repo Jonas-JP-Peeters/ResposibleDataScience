@@ -23,25 +23,81 @@
 \maketitle
 \vspace*{-1cm}
 
-%Submit a 1-page summary of your proposed project, listing the names of both project partners and the ADS you propose to analyze in the project. Be explicit about where you’ll get the data and the code implementing the ADS. You should make sure that the data is available, and that you are able to run the code on that data
-
-%As part of your project summary, please add a brief (1-3 sentence) explanation of why you selected this specific ADS, in relation to the topics we study in the responsible data science course. We are still early in the course, but we encourage you to look at the schedule / syllabus for a full list of topics when answering this question.
-
 \pagenumbering{gobble}
 
-\section*{Introduction}
-\par Sepsis is a life-threatening dysfunctional immune response to infection in which the body attacks its own tissues and organs, often leading to organ failure and death \cite{Singer2016}. It is a critically important world-wide public health issue; with a mortality rate of about 16\%, the estimated number of world-wide cases is as high as 31.5 million \cite{Fleischmann2016}, and in the United States alone, over 1.7 million develop sepsis annually\footnote{\href{https://www.cdc.gov/sepsis/clinicaltools/index.html?CDC_AA_refVal=https\%3A\%2F\%2Fwww.cdc.gov\%2Fsepsis\%2Fdatareports\%2Findex.html}{https://www.cdc.gov/sepsis/clinicaltools.html}}. Better outcomes and lower mortality rates have been connected to early treatment, including the administration of early antibiotics and fluids \cite{Rhee2018}. However, early identification of sepsis remains a challenge. Much work has been done in an effort to develop early identification strategies in the clinical setting \cite{Kim2019}, and in recent years, these efforts have turned toward the use of automated decision systems based on machine learning to predict sepsis \cite{Fleuren2020} and identify patients who may benefit from treatment programs such as early-goal directed therapy (EGDT) or SSC bundles \cite{Kim2019}. In an effort to advance these efforts, PhysioNet, a repository for freely-available medical research data, launched a 2019 challenge entitled “Early Prediction of Sepsis from Clinical Data” \cite{Reyna2019}.
+% DRAFT BACKGROUND AND INPUT AND OUTPUT SECTIONS
 
-\par The use of this a machine learning model to assess the health of an individual and whether or not to start a preemptive procedure to potentially save the patients life is something new. Given the gravity of the consequences it is paramount that models such as these do not further perpetuate the difference in medical treatment different genders receive. For example, \citeauthor{Greenwood2018} found that female patients are less likely as their male counterparts to survive traumatic health episodes, such as heart attacks. A model that informs doctors on the risk of sepsis could either reinforce the existing gender bias in medical care or erase it by being more impartial than the largely male medical staff at ICUs \cite{Chadwick2020}.
+\section*{Background}
 
-\section*{Data}
-\par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient is contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and defined binary sepsis onset based on relevant events (time of initial clinical suspicion, time of organ failure assessment, and time of sepsis onset).
+% 1. Background: general information about your chosen ADS
+%	a. What is the purpose of this ADS? What are its stated goals?
+%	b. If the ADS has multiple goals, explain any trade-offs that these goals may introduce.
 
-\section*{Code}
-\par In 2019, \citeauthor{Sindwani2019} published an article in Towards Data Science titled “Early Detection of Sepsis Using Physiological Data". In the article, the author outlines the problem, exploratory data analysis, feature selection/engineering, and model training and evaluation. The author also provides a link to a fully functioning GitHub \cite{Karan2019}. For our analysis, we will select the best model to analyze for fairness. 
+\par Sepsis is a life-threatening dysfunctional immune response to infection in which the body attacks its own tissues and organs, often leading to organ failure and death \cite{Singer2016}. It is a critically important world-wide public health issue; with a mortality rate of about 16\%, the estimated number of world-wide cases is as high as 31.5 million \cite{Fleischmann2016}, and in the United States alone over 1.7 million develop sepsis annually\footnote{\href{https://www.cdc.gov/sepsis/clinicaltools/index.html?CDC_AA_refVal=https\%3A\%2F\%2Fwww.cdc.gov\%2Fsepsis\%2Fdatareports\%2Findex.html}{https://www.cdc.gov/sepsis/clinicaltools.html}}. Better outcomes and lower mortality rates have been connected to early treatment, including the administration of early antibiotics and fluids \cite{Rhee2018}. However, early identification of sepsis remains a challenge. Much work has been done in an effort to develop early identification strategies in the clinical setting \cite{Kim2019}, and in recent years, these efforts have turned toward the use of automated decision systems based on machine learning to predict sepsis \cite{Fleuren2020} and identify patients who may benefit from treatment programs such as early-goal directed therapy (EGDT) or SSC bundles \cite{Kim2019}. In an effort to advance these efforts, PhysioNet, a repository for freely-available medical research data, launched a 2019 challenge entitled “Early Prediction of Sepsis from Clinical Data” \cite{Reyna2019}.
 
-\section*{Analysis}
-\par Our analysis of this model and the data will be two-fold. First, we will determine if there are any currently existing biases on the basis of gender or age which may lead to less favorable outcomes for marginalized groups. Here we will look at the disparate impact and mean difference between the predictions for both the privileged and unprivileged groups. Secondly, the data we will be using is on a patient-level. Most medical data is used on this level and several precautions are taken to ensure the privacy of the individuals included in the data set. Therefore we will also analyze the possible pitfalls of the privacy measures implemented in this data set.
+\par The use of machine learning models to assess the state of patients' health and determine whether to initiate preemptive procedures is relatively new. In the case of sepsis, if the model is able to correctly predict risk, it has the opportunity to prevent life-threatening illness. If the model fails to predict risk, the consequences can be grave. If the model incorrectly predicts sepsis, vital resources may be allocated to a patient that would have better allocated to another patient. Additionally, frequent incorrect predictions can result in alert fatigue; doctors may choose to ignore the predictions if they tend to be incorrect.  Given the gravity of the consequences, it is paramount that such models do not further perpetuate differences in medical treatment between protected groups. For example, \citeauthor{Greenwood2018} found that female patients are less likely than their male counterparts to survive traumatic health episodes such as heart attacks. A model that informs doctors on the risk of sepsis could either reinforce existing biases in medical care or potentially lessen them by offering a more impartial assessment than may be provided by the largely male medical staff found in ICUs \cite{Chadwick2020}.
+
+\par In 2019, \citeauthor{Sindwani2019} published an article in Towards Data Science titled “Early Detection of Sepsis Using Physiological Data". In the article, the author outlines the problem above. He shows the results of exploratory data analysis, feature selection/engineering, and model training and evaluation. The author also provides a link to a fully functioning GitHub \cite{Karan2019}. In our analysis for fairness, we chose the best model provided by the author. 
+
+\par First, we determine if there are any currently existing biases on the basis of gender or age which may lead to less favorable outcomes for marginalized groups. Here we explore disparate impact and mean difference between the predictions for both the privileged and unprivileged groups. Next, we look at the pre-processing steps taken by the author, and identify any steps that introduce additional bias. We then explore the results of the model, and analyze whether the model will introduce or perpetuate any bias between groups, again using disparate impact and mean difference as our metrics. Most medical data are provided at the level of the individual patient, and several precautions are taken to ensure the privacy of the individuals included in the data set. Therefore we have also analyzed the possible pitfalls of the privacy measures implemented in this data set.
+
+\section*{Input and output}
+
+% 2. Input and output
+%	a. Describe the data used by this ADS. How was this data collected or selected?
+%	b. For each input feature, describe its datatype, give information on missing values and on the value distribution. Show pairwise correlations between features if appropriate. Run any other reasonable profiling of the input that you find interesting and appropriate.
+%	c. What is the output of the system (e.g., is it a class label, a score, a probability, or some other type of output), and how do we interpret it?
+
+\par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient is contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and defined binary sepsis onset based on relevant events (time of initial clinical suspicion, time of deterioration in organ failure assessment, and time of sepsis onset).
+
+Time of initial clinical suspicion of infection was defined as either the time IV antibiotics or blood cultures, whichever came first. To be considered, antibiotics must have been ordered within 3 days after blood cultures, and blood cultures must have been ordered within 1 day of antibiotics, with at least 3 days of consecutive antibiotics treatment. Organ damage was defined as 2-point deterioration in SOFA score within 1 day. Time of sepsis was defined as either time of clinical suspicion of infection or end time of organ failure assessment, whichever came first, as long as organ damage occurred 2 days before or 1 day after suspicion of infection. A patient was labeled as having sepsis if time is greater than or equal to time of sepsis minus 6 hours.
+
+The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
+
+
+
+
+were these the final features selected? what about O2STAT?
+Vital Signs : Heart Rate, Temperature, Blood Pressure, Respiratory rate,
+Laboratory Values : Platelet Count, Glucose , Calcium etc
+Demographics : Age, Gender, Time in ICU , Hospital Admit time
+
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics{'..\Figures\var_missing_hist.pdf'}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
+
+\section*{Implementation and validation}
+
+% DEVELOP A DETAILED PLAN FOR THE OTHER SECTIONS:
+
+% 3. Implementation and validation: present your understanding of the code that implements the ADS. This code was implemented by others (e.g., as part of the Kaggle competition), not by you as part of this assignment. Your goal here is to demonstrate that you understand the implementation at a high level.
+%	a. Describe data cleaning and any other pre-processing
+%	b. Give high-level information about the implementation of the system
+%	c. How was the ADS validated? How do we know that it meets its stated goal(s)?
+
+\section*{Outcomes}
+
+% 4. Outcomes
+%	a. Analyze the effectiveness (accuracy) of the ADS by comparing its performance across different subpopulations.
+%	b. Select one or several fairness or diversity measures, justify your choice of these measures for the ADS in question, and quantify the fairness or diversity of this ADS.
+%	c. Develop additional methods for analyzing ADS performance: think about stability, robustness, performance on difficult or otherwise important examples (in the style of LIME), or any other property that you believe is important to check for this ADS.
+
+\section*{Summary}
+
+% 5. Summary
+%	a. Do you believe that the data was appropriate for this ADS?
+%	b. Do you believe the implementation is robust, accurate, and fair? Discuss your choice of accuracy and fairness measures, and explain which stakeholders may find these measures appropriate.
+%	c. Would you be comfortable deploying this ADS in the public sector, or in the industry? Why so or why not?
+%	d. What improvements do you recommend to the data collection, processing, or analysis methodology?
+
+
+
 
 \newpage
 \bibliographystyle{apacite}
