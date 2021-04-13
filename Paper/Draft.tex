@@ -10,7 +10,7 @@
 \usepackage{apacite}
 \usepackage{booktabs}
 \usepackage{subcaption}
-\usepackage[left=1.5cm,right=1.5cm,top=1cm,bottom=1cm]{geometry}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \setlength{\parskip}{\baselineskip}%
 \setlength{\parindent}{0pt}%
 
@@ -26,7 +26,7 @@
 \maketitle
 \vspace*{-1cm}
 
-\pagenumbering{gobble}
+% \pagenumbering{gobble}
 
 % DRAFT BACKGROUND AND INPUT AND OUTPUT SECTIONS
 
@@ -67,7 +67,8 @@
 \end{figure}
 
 \par The data that is used in the model consists of vital signs, laboratory values and demographic variables. We share some summarized statistics in Table \ref{tab_describe}. The vital signs includes data such as heart rate, pulse oximetry, temperature and systolic blood pressure. These vital signs are collected on a more regular basis and hence we can clearly see that they have less missing values. The laboratory values are the result from blood and other tests. Here we have variables such as fraction of inspired oxygen and glucose. A patient is not always tested and hence we can clearly see that this data is way sparser than those for the vital signs. The behavior of the missing is even clearer when looking at Figure \ref{fig:var_missings}. Figure \ref{fig:var_dists} gives us the distributions of the continuous variables. Here we see that most variables are normal or log normally distributed. 
-\include{Tables/tab_describe}
+
+\input{Tables/tab_describe}
 
 \begin{figure}[htbp!]
     \centering
@@ -102,15 +103,14 @@
 \caption{Sepsis by Categorical Variables}
 \end{figure}
 
-\par 
+\par When looking at the correlation heatmap shown in Figure \ref{fig:corr_plot} we can see some interesting patterns. One is the very high correlation between the three types of blood pressure we are including and the strictly negative correlation between Unit1 and Unit2 which represent the medical and surgical ICU respectively. Something interesting to notice here is that there is a high correlation between temperature and being in the medical ICU and a high correlation between blood pressure and being in the surgical ICU. Another intuitively acceptable negative correlation is between the saturation of oxygen in the blood (O2Sat) and the respiratory rhythm (Resp). The more people need to breath the less oxygen would be available in their current blood. We also notice that an older patient in general seems to have a lower blood pressure than a young patient. 
 
-\begin{figure}
+\begin{figure}[htpb!]
     \centering
-    \includegraphics[scale = 0.45]{box_per_var.pdf}
-    \caption{Feature distribution per Target Label}
-    \label{fig:init_anal}
+    \includegraphics[scale = 0.7]{corr_plot.pdf}
+    \caption{Correlation Plot}
+    \label{fig:corr_plot}
 \end{figure}
-
 
 \section*{Implementation and validation}
 
