@@ -55,6 +55,7 @@ Time of initial clinical suspicion of infection was defined as either the time I
 
 The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
 
+The data that is used in the model consists of vital signs, laboratory values and demographic variables. We share some summarized statistics in Table \ref{tab_describe}. The vital signs includes data such as heart rate, pulse oximetry, temperature and systolic blood pressure. These vital signs are collected on a more regular basis and hence we can clearly see that they have less missing values. The laboratory values are the result from blood and other tests. Here we have variables such as fraction of inspired oxygen and glucose. A patient is not always tested and hence we can clearly see that this data is way sparser than those for the vital signs.
 \include{Tables/tab_describe}
 
 
