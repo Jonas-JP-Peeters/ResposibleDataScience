@@ -1,25 +1,11 @@
-\begin{longtable}{lcccccc}
+\begin{table}
+\centering
 \caption{Summary Statistics}
-\label{tab_describe}\\
-\toprule
-\hline
-{} &   Mean & Standard Deviation &  Minimum & Median & Maximum & Percent Missing \\
-\hline
-\midrule
-\endfirsthead
-\caption[]{Summary Statistics} \\
+\label{tab_describe}
+\begin{tabular}{lcccccc}
 \toprule
 {} &   Mean & Standard Deviation &  Minimum & Median & Maximum & Percent Missing \\
 \midrule
-\endhead
-\midrule
-\multicolumn{7}{r}{{Continued on next page}} \\
-\midrule
-\hline
-\endfoot
-
-\bottomrule
-\endlastfoot
 Heart Rate (bpm)                 &  84.75 &              17.20 &    20.00 &  84.00 &  280.00 &            0.09 \\
 Pulse oximetry (\%)               &  97.21 &               2.93 &    20.00 &  98.00 &  100.00 &            0.13 \\
 Temperature (Celsius)            &  36.99 &               0.78 &    20.90 &  37.00 &   42.22 &            0.66 \\
@@ -34,4 +20,6 @@ Type of ICU                      &   0.50 &               0.50 &     0.00 &   1.
 Age                              &  62.34 &              16.29 &    14.00 &  64.24 &  100.00 &            0.00 \\
 Gender                           &   0.57 &               0.50 &     0.00 &   1.00 &    1.00 &            0.00 \\
 Hospital Admission Time          & -54.65 &             167.17 & -5366.86 &  -4.92 &   23.99 &            0.00 \\
-\end{longtable}
+\bottomrule
+\end{tabular}
+\end{table}
