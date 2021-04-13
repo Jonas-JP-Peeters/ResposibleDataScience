@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{apacite}
+\usepackage{longtable}
 \usepackage[left=1.5cm,right=1.5cm,top=1cm,bottom=1cm]{geometry}
 \setlength{\parskip}{\baselineskip}%
 \setlength{\parindent}{0pt}%
@@ -54,7 +55,7 @@ Time of initial clinical suspicion of infection was defined as either the time I
 
 The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
 
-
+\include{Tables/tab_describe}
 
 
 were these the final features selected? what about O2STAT?
