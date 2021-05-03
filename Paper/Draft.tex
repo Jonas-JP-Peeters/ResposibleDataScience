@@ -38,11 +38,11 @@
 
 \par Sepsis is a life-threatening dysfunctional immune response to infection in which the body attacks its own tissues and organs, often leading to organ failure and death \cite{Singer2016}. It is a critically important world-wide public health issue; with a mortality rate of about 16\%, the estimated number of world-wide cases is as high as 31.5 million \cite{Fleischmann2016}, and in the United States alone over 1.7 million develop sepsis annually\footnote{\href{https://www.cdc.gov/sepsis/clinicaltools/index.html?CDC_AA_refVal=https\%3A\%2F\%2Fwww.cdc.gov\%2Fsepsis\%2Fdatareports\%2Findex.html}{https://www.cdc.gov/sepsis/clinicaltools.html}}. Better outcomes and lower mortality rates have been connected to early treatment, including the administration of early antibiotics and fluids \cite{Rhee2018}. However, early identification of sepsis remains a challenge. Much work has been done in an effort to develop early identification strategies in the clinical setting \cite{Kim2019}, and in recent years, these efforts have turned toward the use of automated decision systems based on machine learning to predict sepsis \cite{Fleuren2020} and identify patients who may benefit from treatment programs such as early-goal directed therapy (EGDT) or SSC bundles \cite{Kim2019}. In an effort to advance these efforts, PhysioNet, a repository for freely-available medical research data, launched a 2019 challenge entitled “Early Prediction of Sepsis from Clinical Data” \cite{Reyna2019}.
 
-\par The use of machine learning models to assess the state of patients' health and determine whether to initiate preemptive procedures is relatively new. In the case of sepsis, if the model is able to correctly predict risk, it has the opportunity to prevent life-threatening illness. If the model fails to predict risk, the consequences can be grave. If the model incorrectly predicts sepsis, vital resources may be allocated to a patient that would have better allocated to another patient. Additionally, frequent incorrect predictions can result in alert fatigue; doctors may choose to ignore the predictions if they tend to be incorrect.  Given the gravity of the consequences, it is paramount that such models do not further perpetuate differences in medical treatment between protected groups. For example, \citeauthor{Greenwood2018} found that female patients are less likely than their male counterparts to survive traumatic health episodes such as heart attacks. A model that informs doctors on the risk of sepsis could either reinforce existing biases in medical care or potentially lessen them by offering a more impartial assessment than may be provided by the largely male medical staff found in ICUs \cite{Chadwick2020}.
+\par The use of machine learning models to assess the state of patients' health and determine whether to initiate preemptive procedures is relatively new. In the case of sepsis, if such a model is able to correctly predict risk, it has the opportunity to prevent life-threatening illness, whereas if the model fails to predict risk, the consequences can be grave. Constrastingly, if the model incorrectly predicts sepsis, vital resources may be allocated to a patient that would have better allocated to another patient. Frequent incorrect predictions can also result in alert fatigue; doctors may choose to ignore the predictions if they tend to be incorrect.  Given the gravity of the consequences, it is paramount that such models do not further perpetuate differences in medical treatment for historically unprivileged groups. For example, \citeauthor{Greenwood2018} found that female patients are less likely than their male counterparts to survive traumatic health episodes such as heart attacks. A model that informs doctors on the risk of sepsis could either reinforce existing biases in medical care or potentially lessen them by offering a more impartial assessment than may be provided by the largely male medical staff found in ICUs \cite{Chadwick2020}.
 
-\par In 2019, \citeauthor{Sindwani2019} published an article in Towards Data Science titled “Early Detection of Sepsis Using Physiological Data". In the article, the author outlines the problem above. He shows the results of exploratory data analysis, feature selection/engineering, and model training and evaluation. The author also provides a link to a fully functioning GitHub \cite{Karan2019}. In our analysis for fairness, we chose the best model provided by the author. 
+\par In 2019, \citeauthor{Sindwani2019} published an article in Towards Data Science titled “Early Detection of Sepsis Using Physiological Data". In the article, Sindwani outlines the problem above. The paper includes exploratory data analysis, feature selection/engineering, and model training and evaluation. Sindwani also provides a link to a fully functioning GitHub \cite{Karan2019}. We chose the best model provided by the author to analyze for fairness. 
 
-\par First, we determine if there are any currently existing biases on the basis of gender or age which may lead to less favorable outcomes for marginalized groups. Here we explore disparate impact and mean difference between the predictions for both the privileged and unprivileged groups. Next, we look at the pre-processing steps taken by the author, and identify any steps that introduce additional bias. We then explore the results of the model, and analyze whether the model will introduce or perpetuate any bias between groups, again using disparate impact and mean difference as our metrics. Most medical data are provided at the level of the individual patient, and several precautions are taken to ensure the privacy of the individuals included in the data set. Therefore we have also analyzed the possible pitfalls of the privacy measures implemented in this data set.
+\par First, we determine if there are any existing biases in the dataset that may lead to less favorable outcomes for marginalized groups. We explore underlying evidence of disparate impact between the privileged and unprivileged groups for the 'gender' variable. Next, consider the preprocessing steps taken by the author, and identify any steps that introduce additional bias. We then explore the results of the model and analyze whether the model introduces or perpetuates any bias between groups, considering disparate impact, mean difference, and false positive rates. Most medical data are provided at the level of the individual patient, and several precautions are taken to ensure the privacy of the individuals included in the data set. Therefore we discuss the possible pitfalls of the privacy measures implemented in releasing this dataset for the competition.
 
 \section*{Input and output}
 
@@ -51,13 +51,15 @@
 %	b. For each input feature, describe its datatype, give information on missing values and on the value distribution. Show pairwise correlations between features if appropriate. Run any other reasonable profiling of the input that you find interesting and appropriate.
 %	c. What is the output of the system (e.g., is it a class label, a score, a probability, or some other type of output), and how do we interpret it?
 
-\par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient is contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and defined binary sepsis onset based on relevant events (time of initial clinical suspicion, time of deterioration in organ failure assessment, and time of sepsis onset).
+\par The training data, which were provided in the PhysioNet website to anyone interested in participating, were sourced from 40,000 ICU patients from Beth Israel Deaconess Medical Center and Emory University Hospital. While the test data do not appear to have ever been released, the training data are still available for download in the PhysioNet archive \cite{Goldberger2000}. The deidentified data for each patient are contained within a single pipe-delimited file, and include demographics, vitals, and laboratory values, and binary sepsis onset defined on relevant events (time of initial clinical suspicion, time of deterioration in organ failure assessment, and time of sepsis onset).
 
 \par Time of initial clinical suspicion of infection was defined as either the time IV antibiotics or blood cultures, whichever came first. To be considered, antibiotics must have been ordered within 3 days after blood cultures, and blood cultures must have been ordered within 1 day of antibiotics, with at least 3 days of consecutive antibiotics treatment. Organ damage was defined as 2-point deterioration in SOFA score within 1 day. Time of sepsis was defined as either time of clinical suspicion of infection or end time of organ failure assessment, whichever came first, as long as organ damage occurred 2 days before or 1 day after suspicion of infection. A patient was labeled as having sepsis if time is greater than or equal to time of sepsis minus 6 hours.
 
-\par The original data provided by the PhysioNet challenge is temporal: a single row in the dataset is not an individual, but a rather a timepoint. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
+\par The original data provided by the PhysioNet challenge are temporal: a single row in the data set is not an individual, but a rather a time point. The author of the prediction tool chose to ignore the time component, and treat each record as independent and identically distributed. The author argues that this approach could be used to predict sepsis at each hour for a given patient without taking into account past data.
 
-\par Our label of interest is looking at if an individual is identified as having sepsis or not. A value of zero represents the patient not having sepsis and a value of one represents the patient having sepsis. We can see in Figure \ref{fig:label_dist} that the data is unbalanced. This the model will try to remedy by oversampling those observations that identify sepsis.
+% ***elaborate on how this is not a good assumption and what issues it may cause
+
+\par The sepsis binary indicator is our label of interest. A value of zero represents the patient without sepsis within 6 hours, and a value of one represents the patient having sepsis within 6 hours. We can see in Figure \ref{fig:label_dist} that the data are unbalanced. Sindwani's model attempts to remedy this by oversampling the positive observations.
 
 \begin{figure}[htbp!]
     \centering
@@ -66,7 +68,7 @@
     \label{fig:label_dist}
 \end{figure}
 
-\par The data that is used in the model consists of vital signs, laboratory values and demographic variables. We share some summarized statistics in Table \ref{tab_describe}. The vital signs includes data such as heart rate, pulse oximetry, temperature and systolic blood pressure. These vital signs are collected on a more regular basis and hence we can clearly see that they have less missing values. The laboratory values are the result from blood and other tests. Here we have variables such as fraction of inspired oxygen and glucose. A patient is not always tested and hence we can clearly see that this data is way sparser than those for the vital signs. The behavior of the missing is even clearer when looking at Figure \ref{fig:var_missings}. Figure \ref{fig:var_dists} gives us the distributions of the continuous variables. Here we see that most variables are normal or log normally distributed. 
+\par The data used in Sindwani's model consist of vital signs, laboratory values, and demographic variables. We share some summary statistics in Table \ref{tab_describe}. The vital signs include data such as heart rate, pulse oximetry, temperature, and systolic blood pressure. These vital signs are collected on a regular basis and hence we can clearly see that they have fewer missing values. Laboratory values are the result of blood and other tests. These include variables such as fraction of inspired oxygen and glucose. Patients are less frequently tested and hence we can clearly see that these data are much more sparse than the vital signs data. The behavior of the missing is even clearer when looking at Figure \ref{fig:var_missings}. Figure \ref{fig:var_dists} provides the distributions of the continuous variables. We see that most variables are normally or log normally distributed. 
 
 \input{Tables/tab_describe}
 
@@ -84,7 +86,7 @@
     \label{fig:var_dists}
 \end{figure}
 
-\par An important aspect we need to look at is the breakdowns of the sepsis label per category. Our data has two categories we take into account. One is the gender which we will consider when evaluating fairness and the other is the type of ICU (either surgical or medical). We can see the breakdown of the labels in figures \ref{fig:label_ICU} and \ref{fig:label_per_sex}. We can see that you are 75\% and 12\% more likely to have sepsis in the medical ICU or as a male respectively. Another point that is valuable to make here, is that we can see that for every woman in the data set there are 1.3 men. This means that men are over-represented in the sample.
+\par An important aspect we need to look at is the breakdown of the sepsis label per category. Our data has two categories we take into account. One is the gender, which we will consider when evaluating fairness, and the other is the type of ICU (either surgical or medical). We can see the breakdown of the labels in figures \ref{fig:label_ICU} and \ref{fig:label_per_sex}. We can see that patients are 75\% and 12\% more likely to have sepsis in the medical ICU and as a male, respectively. It is also worth noting that we can see that for every woman in the data set there are 1.3 men. This means that men are over-represented in our sample.
 
 \begin{figure}[hbtp!]
 \centering
@@ -103,7 +105,7 @@
 \caption{Sepsis by Categorical Variables}
 \end{figure}
 
-\par When looking at the correlation heatmap shown in Figure \ref{fig:corr_plot} we can see some interesting patterns. One is the very high correlation between the three types of blood pressure we are including and the strictly negative correlation between Unit1 and Unit2 which represent the medical and surgical ICU respectively. Something interesting to notice here is that there is a high correlation between temperature and being in the medical ICU and a high correlation between blood pressure and being in the surgical ICU. Another intuitively acceptable negative correlation is between the saturation of oxygen in the blood (O2Sat) and the respiratory rhythm (Resp). The more people need to breath the less oxygen would be available in their current blood. We also notice that an older patient in general seems to have a lower blood pressure than a young patient. 
+\par We see some interesting patterns in our the correlation heatmap, shown in Figure \ref{fig:corr_plot}. First, there is a strong correlation between the three measures of blood pressure included, and a strictly negative correlation between Unit1 and Unit2, which represent the medical and surgical ICU respectively. Interestingly, there is a high correlation between temperature and the medical ICU, and a high correlation between blood pressure and the surgical ICU. Another intuitively acceptable negative correlation is between the saturation of oxygen in the blood (O2Sat) and the respiratory rhythm (Resp). The more patients need to breath, the less oxygen is available in the blood. We also notice that older patients in general seem to have a lower blood pressure than a young patients. 
 
 \begin{figure}[htpb!]
     \centering
@@ -114,12 +116,32 @@
 
 \section*{Implementation and validation}
 
-% DEVELOP A DETAILED PLAN FOR THE OTHER SECTIONS:
-
 % 3. Implementation and validation: present your understanding of the code that implements the ADS. This code was implemented by others (e.g., as part of the Kaggle competition), not by you as part of this assignment. Your goal here is to demonstrate that you understand the implementation at a high level.
 %	a. Describe data cleaning and any other pre-processing
 %	b. Give high-level information about the implementation of the system
 %	c. How was the ADS validated? How do we know that it meets its stated goal(s)?
+
+\par The main change made that has a serious impact on the composition of our data: the patient data was originally saved individually, but collected at different points in time. The designers of our model disregard this information and just use the data as if it were pulled from an identical distribution.
+
+\par The authors of the model we will refer to made several data cleaning decisions. Instead of using the actual heart rates, they opted to categorize them in the categories normal, abnormal and missing. When determining the categories they took into account age but they did not take into account gender. This could potentially lead to a disparate impact down the road. They made similar changes for temperature, pulse oximetry and respiration rate. They also grouped individuals in categories based on age such as infant (< 1 year), child/adult (between 1 and 65 year old) and old (> 65 year). For the different blood pressures they distinguished between low, normal, elevated, high and missing.
+
+\par The system is implemented as a prediction algorithm to predict sepsis within 6 hours of the input attributes. The system was validated by simple metrics, with little consideration for the impact of false positive and false negative rates. The authors have focused on recall, precision and average precision. Their best model was a decision tree which yielded:
+\begin{itemize}
+    \item Recall: 0.0978
+    \item Precision: 0.0609
+    \item Average Precision: 0.0195
+\end{itemize}
+In Table \ref{tab:conf_mat} we can see the confusion matrix of their final model. While overall accuracy (96.4\%) might have been good the recall rate is abysmal. Only a small fraction of those patients that will develop sepsis will be detected by this model. These are rates which would lead us to suggest not to use this model in practice. When optimizing the model, the designers were maximizing for the best possible recall and precision rates. This is in line with their goal of successfully catching positives. Nevertheless their goal does not take the disparate impact of the model on different subgroups into account. We will take a closer look at this in the next section.
+\begin{table}[htpb!]
+    \centering
+    \begin{tabular}{l|cc}
+        True\textbackslash{}Predicted & 0       & 1    \\ \hline
+        0                             & 183 401 & 4330 \\
+        1                             & 2591    & 281 
+    \end{tabular}
+    \caption{Confusion Matrix}
+    \label{tab:conf_mat}
+\end{table}
 
 \section*{Outcomes}
 
@@ -127,6 +149,10 @@
 %	a. Analyze the effectiveness (accuracy) of the ADS by comparing its performance across different subpopulations.
 %	b. Select one or several fairness or diversity measures, justify your choice of these measures for the ADS in question, and quantify the fairness or diversity of this ADS.
 %	c. Develop additional methods for analyzing ADS performance: think about stability, robustness, performance on difficult or otherwise important examples (in the style of LIME), or any other property that you believe is important to check for this ADS.
+
+\par First, we will analyze the effectiveness of the ADS and verify that the results match those published by the author of the github using the same metrics as originally published. Then, we will run the ADS using the same metrics on only the male population and only the female population. We will then test additional fairness metrics to determine if the ADS system may result in bias. We would like to know if the metric produces disparate impact, and whether the mean difference is within an acceptable range. Given the implications highlighted in the introduction regarding the importance of false positives and false negatives in this context, we will also explore the false positive and negative rates across populations to evaluate the way in which the ADS makes mistakes and whether this may cause additional negative impact on the marginalized groups.
+
+\clearpage
 
 \section*{Summary}
 
@@ -136,8 +162,7 @@
 %	c. Would you be comfortable deploying this ADS in the public sector, or in the industry? Why so or why not?
 %	d. What improvements do you recommend to the data collection, processing, or analysis methodology?
 
-
-
+\par We plan on first looking at the methodology and using disparate impact and difference in outcome to evaluate the possibly unfair impact of the model on the well-being of the patient from marginalized groups. At this point, we would not be comfortable using this system in healthcare settings, as ignoring the temporal nature of sepsis could have potentially disastrous effects on both men and women. One improvement we would suggest is taking into account how patients change over time and tweaking the model in such way that we are able to predict sepsis ex-post rather than identifying it as it occurs.
 
 \newpage
 \bibliographystyle{apacite}
